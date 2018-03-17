@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Island</title>
+	<link href="styles/style.css" rel="stylesheet" type="text/css">
+</head>
+	 <div id="container"></div>
+<body>
+</body>
+<script src="js/three.min.js"></script>
+<script src="js/OBJLoader.js"></script>
+<script src="js/TrackballControls.js"></script>
+<script type="x-shader/x-vertex" id="vertexShader">
+	varying vec2 vUv;
+		uniform vec2 u_size;
+		uniform vec2 u_resolution;
+		void main() {
+			vUv = (position.xy+1.0)*0.5;
+			float scalex,scaley;
+			// scalex = u_size.x/(u_resolution.x);
+			// scaley = u_size.y/(u_resolution.y);
+			// vUv.x = vUv.x/scalex;
+			// vUv.y = vUv.y/scaley;
+			vUv.x = vUv.x;
+			vUv.y = vUv.y;
+			gl_Position =  vec4(position, 1.0);
+		}
+</script>
+<script type="x-shader/x-fragment" id="fragmentShader">
+	varying vec2 vUv;
+		uniform vec2 u_resolution;
+		uniform vec2 u_mouse;
+		uniform float u_time;
+		uniform sampler2D texture;
+		uniform sampler2D map;
+		uniform float u_animation;
+
+		void main() {
+			// vec2 st = gl_FragCoord.xy/u_resolution.xy;
+			float m =  (u_mouse.x/u_resolution.x - 0.5)*0.001;
+			// float distort = sin(vUv.y * 100.0 + u_time)*0.001 + m;
+			float map = texture2D(map, vUv).r;
+			// vec4 color = texture2D(texture, vec2(vUv.x + distort*map,vUv.y));
+			// gl_FragColor = vec4(abs(sin(u_time)),0.0,0.0,1.0);
+		   
+			// gl_FragColor = vec4(color.rgb*(1.0-map) + map* vec3(color.r + color.g + color.b)/3.0,1.0);
+			float distort = sin(vUv.y * 100.0 + u_time)*0.001 + m;	
+			 vec4 texture = texture2D(texture, vec2(vUv.x+distort*map,vUv.y));
+			//vUv - по каким координатам отрисовыватьб нормирование
+			// gl_FragColor = vec4( vec3(0.0,1.0,0.0),1.0);
+			gl_FragColor = vec4(texture.r,texture.g,texture.b,1.0);
+
+		}
+</script>
+<script src="js/script.js"></script>
+</body>
+
+</html>
